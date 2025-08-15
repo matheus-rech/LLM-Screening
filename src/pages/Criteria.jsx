@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,7 @@ export default function CriteriaPage() {
   const loadProject = async () => {
     try {
       setIsLoading(true);
-      const projects = await ReviewProject.list("-created_date", 1);
+      const projects = await apiClient.listProjects("-created_date", 1);
       if (projects.length > 0) {
         const loadedProject = projects[0];
         setProject(loadedProject);
@@ -85,7 +85,7 @@ export default function CriteriaPage() {
   const saveCriteria = async () => {
     try {
       if (project) {
-        await ReviewProject.update(project.id, {
+        await apiClient.updateProject(project.id, {
           ...criteria,
           use_advanced_ai: useAdvancedAI,
           use_dual_review: useDualReview,
@@ -99,7 +99,7 @@ export default function CriteriaPage() {
         }
       } else {
         // Create a new project if none exists
-        const newProject = await ReviewProject.create({
+        const newProject = await apiClient.createProject({
           name: "New Review Project",
           ...criteria,
           use_advanced_ai: useAdvancedAI,

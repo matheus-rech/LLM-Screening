@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect, useRef } from "react";
-import { Reference, ReviewProject } from "@/api/entities";
+import { useState, useEffect, useRef } from "react";
+import { apiClient } from "@/api/apiClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, XCircle, AlertTriangle, Brain, Users, Zap, Clock, DollarSign, User } from "lucide-react"; // Added User icon
+import { CheckCircle, AlertTriangle, Brain, Users, Zap, DollarSign, User } from "lucide-react";
 import { createPageUrl } from "@/utils";
 
 import { DualAIScreener } from "../components/ai/DualAIScreener";
@@ -143,7 +143,7 @@ export default function DualReviewPage() {
     // Only update if processing has actually started
     if (!processingStartTime.current) return;
 
-    const allRefs = await Reference.list(); // Fetch all references to get latest state
+    const allRefs = await apiClient.listReferences(); // Fetch all references to get latest state
     const processed = allRefs.filter(r => r.dual_ai_completed).length;
     const agreements = allRefs.filter(r => r.ai_reviewer_1 === r.ai_reviewer_2 && r.dual_ai_completed).length;
     const conflicts = allRefs.filter(r => r.ai_reviewer_1 !== r.ai_reviewer_2 && r.dual_ai_completed).length;
@@ -162,7 +162,7 @@ export default function DualReviewPage() {
 
   const loadData = async () => {
     // Load project
-    const projects = await ReviewProject.list("-created_date", 1);
+    const projects = await apiClient.listProjects("-created_date", 1);
     if (projects.length > 0) {
       const loadedProject = projects[0];
       setProject(loadedProject);
@@ -170,7 +170,7 @@ export default function DualReviewPage() {
     }
 
     // Load references that are still pending for processing
-    const refs = await Reference.filter(
+    const refs = await apiClient.filterReferences(
       { screening_status: "pending" }, 
       "created_date",
       1000
@@ -185,7 +185,7 @@ export default function DualReviewPage() {
     setEstimatedTime(timeEstimate);
 
     // Update general stats based on ALL references, regardless of status
-    const allRefs = await Reference.list();
+    const allRefs = await apiClient.listReferences();
     const newStats = {
       total: allRefs.length,
       processed: allRefs.filter(r => r.dual_ai_completed).length,
@@ -196,7 +196,7 @@ export default function DualReviewPage() {
     setStats(newStats);
 
     // Load unresolved conflicts
-    const conflictRefs = await Reference.filter(
+    const conflictRefs = await apiClient.filterReferences(
       { dual_ai_completed: true, screening_status: "conflict" }
     );
     setConflicts(conflictRefs);
@@ -268,7 +268,7 @@ export default function DualReviewPage() {
       ProcessingQueue.updateProgress(i, references.length, "parallel", currentUser); // Store 0-indexed current reference
       
       // Update status to show current processing
-      await Reference.update(reference.id, { screening_status: "in_progress" });
+      await apiClient.updateReference(reference.id, { screening_status: "in_progress" });
       
       await DualAIScreener.processReference(reference, criteria);
       
@@ -300,7 +300,7 @@ export default function DualReviewPage() {
       
       ProcessingQueue.updateProgress(i, allReferences.length, "parallel", currentUser);
       
-      await Reference.update(reference.id, { screening_status: "in_progress" });
+      await apiClient.updateReference(reference.id, { screening_status: "in_progress" });
       await DualAIScreener.processReference(reference, criteria);
       
       setProgress(((i + 1) / allReferences.length) * 100);
@@ -325,7 +325,7 @@ export default function DualReviewPage() {
       
       // Mark batch references as in progress
       const updatePromises = batch.map(ref => 
-        Reference.update(ref.id, { screening_status: "in_progress" })
+        apiClient.updateReference(ref.id, { screening_status: "in_progress" })
       );
       await Promise.all(updatePromises); // Wait for all updates in batch
       
@@ -363,7 +363,7 @@ export default function DualReviewPage() {
       ProcessingQueue.updateProgress(i, totalBatches, "batch", currentUser);
       
       const updatePromises = batch.map(ref => 
-        Reference.update(ref.id, { screening_status: "in_progress" })
+        apiClient.updateReference(ref.id, { screening_status: "in_progress" })
       );
       await Promise.all(updatePromises);
       
@@ -377,7 +377,7 @@ export default function DualReviewPage() {
   };
 
   const resolveConflict = async (reference, decision, notes = "") => {
-    await Reference.update(reference.id, {
+    await apiClient.updateReference(reference.id, {
       screening_status: decision,
       manual_decision: decision,
       reviewer_notes: notes,

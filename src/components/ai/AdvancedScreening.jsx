@@ -1,4 +1,4 @@
-import { InvokeLLM } from "@/api/integrations";
+import { apiClient } from "@/api/apiClient";
 
 export class AdvancedScreening {
   static async screenReference(reference, criteria) {
@@ -38,42 +38,38 @@ Be thorough in your analysis and provide specific reasoning for your decision.
     `;
 
     try {
-      const result = await InvokeLLM({
-        prompt,
-        add_context_from_internet: false,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            recommendation: {
-              type: "string",
-              enum: ["include", "exclude", "uncertain"],
-              description: "Screening recommendation"
-            },
-            confidence: {
-              type: "number",
-              minimum: 0,
-              maximum: 1,
-              description: "Confidence score"
-            },
-            reasoning: {
-              type: "string",
-              description: "Detailed reasoning for the decision"
-            },
-            population_match: {
-              type: "boolean",
-              description: "Does the population match criteria"
-            },
-            intervention_match: {
-              type: "boolean", 
-              description: "Does the intervention match criteria"
-            },
-            outcome_relevance: {
-              type: "boolean",
-              description: "Are the outcomes relevant"
-            }
+      const result = await apiClient.invokeLLM(prompt, {
+        type: "object",
+        properties: {
+          recommendation: {
+            type: "string",
+            enum: ["include", "exclude", "uncertain"],
+            description: "Screening recommendation"
           },
-          required: ["recommendation", "confidence", "reasoning"]
-        }
+          confidence: {
+            type: "number",
+            minimum: 0,
+            maximum: 1,
+            description: "Confidence score"
+          },
+          reasoning: {
+            type: "string",
+            description: "Detailed reasoning for the decision"
+          },
+          population_match: {
+            type: "boolean",
+            description: "Does the population match criteria"
+          },
+          intervention_match: {
+            type: "boolean", 
+            description: "Does the intervention match criteria"
+          },
+          outcome_relevance: {
+            type: "boolean",
+            description: "Are the outcomes relevant"
+          }
+        },
+        required: ["recommendation", "confidence", "reasoning"]
       });
 
       return result;

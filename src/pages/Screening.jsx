@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Reference, ReviewProject } from "@/api/entities";
+import { useState, useEffect } from "react";
+import { apiClient } from "@/api/apiClient";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import { createPageUrl } from "@/utils";
@@ -40,13 +40,13 @@ export default function ScreeningPage() {
 
   const loadData = async () => {
     // Load project
-    const projects = await ReviewProject.list("-created_date", 1);
+    const projects = await apiClient.listProjects("-created_date", 1);
     if (projects.length > 0) {
       setProject(projects[0]);
     }
 
     // Load references
-    const refs = await Reference.filter(
+    const refs = await apiClient.filterReferences(
       { screening_status: "pending" },
       "created_date",
       100
@@ -54,7 +54,7 @@ export default function ScreeningPage() {
     setReferences(refs);
 
     // Calculate stats
-    const allRefs = await Reference.list();
+    const allRefs = await apiClient.listReferences();
     const newStats = {
       total: allRefs.length,
       screened: allRefs.filter(r => r.screening_status !== "pending").length,
@@ -89,7 +89,7 @@ export default function ScreeningPage() {
       );
 
       // Save AI recommendation to database
-      await Reference.update(reference.id, {
+      await apiClient.updateReference(reference.id, {
         ai_recommendation: result.recommendation,
         ai_confidence: result.confidence,
         ai_reasoning: result.reasoning
@@ -117,7 +117,7 @@ export default function ScreeningPage() {
     const reference = references[currentIndex];
     if (!reference) return;
 
-    await Reference.update(reference.id, {
+    await apiClient.updateReference(reference.id, {
       screening_status: decision,
       manual_decision: decision,
       reviewer_notes: notes,

@@ -1,10 +1,10 @@
-import { Reference, ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 
 export class DemoDataLoader {
   static async loadIntracranialPressureDemoData() {
     try {
       // Create demo project with PICO criteria derived from the actual papers provided
-      const demoProject = await ReviewProject.create({
+      const demoProject = await apiClient.createProject({
         name: "Intracranial Pressure Monitoring Systematic Review",
         description: "Systematic review examining intracranial pressure monitoring techniques, management strategies, and clinical outcomes",
         population: "Adult patients with conditions requiring intracranial pressure monitoring including traumatic brain injury, subarachnoid hemorrhage, brain tumors, hydrocephalus, and other neurological conditions causing intracranial hypertension",
@@ -86,7 +86,7 @@ export class DemoDataLoader {
       ];
 
       // Insert the sample references
-      await Reference.bulkCreate(sampleReferences);
+      await apiClient.batchCreateReferences(sampleReferences);
 
       return {
         project: demoProject,

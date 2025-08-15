@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from "react";
-import { Reference, ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -128,13 +128,13 @@ export default function ImportPage() {
       const batchSize = 50;
       for (let i = 0; i < referencesToSave.length; i += batchSize) {
         const batch = referencesToSave.slice(i, i + batchSize);
-        await Reference.bulkCreate(batch);
+        await apiClient.batchCreateReferences(batch);
         setProgress(50 + ((i + batch.length) / referencesToSave.length) * 40);
       }
 
       // Update project status
       setProgress(95);
-      await ReviewProject.update(project.id, {
+      await apiClient.updateProject(project.id, {
         status: "screening"
       });
 

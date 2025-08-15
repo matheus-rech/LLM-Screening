@@ -1,4 +1,4 @@
-import { InvokeLLM } from "@/api/integrations";
+import { apiClient } from "@/api/apiClient";
 
 export class ModelAnalyzer {
   static async detectModel() {
@@ -9,9 +9,7 @@ export class ModelAnalyzer {
       3. Your capabilities
       4. Any specific strengths in academic/research tasks`;
 
-      const result = await InvokeLLM({
-        prompt,
-        response_json_schema: {
+      const result = await apiClient.invokeLLM(prompt, {
           type: "object",
           properties: {
             model_name: { type: "string" },
@@ -20,7 +18,6 @@ export class ModelAnalyzer {
             capabilities: { type: "array", items: { type: "string" } },
             research_strengths: { type: "array", items: { type: "string" } }
           }
-        }
       });
 
       return result;
@@ -46,17 +43,14 @@ export class ModelAnalyzer {
       Provide detailed screening analysis.`;
 
       const startTime = Date.now();
-      const result = await InvokeLLM({
-        prompt: testPrompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            recommendation: { type: "string", enum: ["include", "exclude", "uncertain"] },
-            confidence: { type: "number", minimum: 0, maximum: 1 },
-            reasoning: { type: "string" },
-            analysis_depth: { type: "string" },
-            keywords_identified: { type: "array", items: { type: "string" } }
-          }
+      const result = await apiClient.invokeLLM(testPrompt, {
+        type: "object",
+        properties: {
+          recommendation: { type: "string", enum: ["include", "exclude", "uncertain"] },
+          confidence: { type: "number", minimum: 0, maximum: 1 },
+          reasoning: { type: "string" },
+          analysis_depth: { type: "string" },
+          keywords_identified: { type: "array", items: { type: "string" } }
         }
       });
       const responseTime = Date.now() - startTime;

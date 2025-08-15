@@ -1,4 +1,4 @@
-import { InvokeLLM } from "@/api/integrations";
+import { apiClient } from "@/api/apiClient";
 
 export class OptimizedScreening {
   static async screenReference(reference, criteria, options = {}) {
@@ -20,11 +20,7 @@ export class OptimizedScreening {
     const prompt = this.buildOptimizedPrompt(reference, criteria, useAdvanced);
 
     try {
-      const result = await InvokeLLM({
-        prompt,
-        add_context_from_internet: false,
-        response_json_schema: this.getResponseSchema(includeAnalysis)
-      });
+      const result = await apiClient.invokeLLM(prompt, this.getResponseSchema(includeAnalysis));
 
       // Add analysis metrics
       const analysisMetrics = this.analyzeResponse(result, reference, criteria);

@@ -2,7 +2,7 @@ import { apiClient } from "@/api/apiClient";
 
 export class OptimizedScreening {
   static async screenReference(reference, criteria, options = {}) {
-    const { useAdvanced = false, includeAnalysis = true } = options;
+    const { useAdvanced = false, includeAnalysis = true, provider = null, model = null } = options;
 
     if (!reference.abstract && !reference.title) {
       return {
@@ -20,7 +20,12 @@ export class OptimizedScreening {
     const prompt = this.buildOptimizedPrompt(reference, criteria, useAdvanced);
 
     try {
-      const result = await apiClient.invokeLLM(prompt, this.getResponseSchema(includeAnalysis));
+      const result = await apiClient.invokeLLM(
+        prompt,
+        this.getResponseSchema(includeAnalysis),
+        provider,
+        model
+      );
 
       // Add analysis metrics
       const analysisMetrics = this.analyzeResponse(result, reference, criteria);

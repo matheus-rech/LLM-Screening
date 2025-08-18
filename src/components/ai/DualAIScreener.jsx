@@ -14,7 +14,9 @@ export class DualAIScreener {
         {
           useAdvanced: true,
           includeAnalysis: true,
-          reviewerContext: "AI Reviewer 1 - Focus on strict inclusion criteria adherence"
+          reviewerContext: "AI Reviewer 1 - Focus on strict inclusion criteria adherence",
+          provider: 'google',
+          model: 'gemini-pro'
         }
       );
 
@@ -24,7 +26,9 @@ export class DualAIScreener {
         {
           useAdvanced: true,
           includeAnalysis: true,
-          reviewerContext: "AI Reviewer 2 - Focus on comprehensive evidence evaluation"
+          reviewerContext: "AI Reviewer 2 - Focus on comprehensive evidence evaluation",
+          provider: 'openai',
+          model: 'gpt-4o'
         }
       );
 

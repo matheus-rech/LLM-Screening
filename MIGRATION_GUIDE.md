@@ -145,9 +145,4 @@ const response = await fetch('http://localhost:3001/');
 console.log(await response.json()); // Should show {hello: 'world'}
 ```
 
-## Support
 
-For issues or questions about the migration, check:
-- Base44 to Supabase differences
-- Supabase documentation
-- OpenAI API documentation

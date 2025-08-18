@@ -1,4 +1,4 @@
-import { Reference, ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 
 export class ProcessingQueue {
   static QUEUE_KEY = "ai_processing_queue";
@@ -114,7 +114,7 @@ export class ProcessingQueue {
       
       // Verify references still exist and are pending
       const referenceIds = queueData.references.map(ref => ref.id);
-      const currentRefs = await Reference.filter({
+      const currentRefs = await apiClient.filterReferences({
         id: { in: referenceIds },
         screening_status: "pending"
       });

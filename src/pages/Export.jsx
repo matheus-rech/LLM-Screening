@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Reference, ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,7 +31,7 @@ export default function ExportPage() {
       setProject(projects[0]);
     }
 
-    const refs = await Reference.list();
+    const refs = await apiClient.listReferences();
     setReferences(refs);
   };
 

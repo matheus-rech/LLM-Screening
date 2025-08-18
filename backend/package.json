@@ -10,10 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.60.0",
+    "@fastify/cors": "^11.1.0",
+    "@google/generative-ai": "^0.24.1",
+    "@supabase/supabase-js": "^2.55.0",
     "dotenv": "^16.4.5",
-    "fastify": "^4.28.1"
+    "fastify": "^5.0.0",
+    "openai": "^4.52.7",
+    "@supabase/supabase-js": "^2.44.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  }
+  },
+  "keywords": []
 }

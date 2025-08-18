@@ -1,6 +1,6 @@
 
 import { OptimizedScreening } from "./OptimizedScreening";
-import { Reference } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 import { ProcessingQueue } from "./ProcessingQueue";
 
 export class DualAIScreener {
@@ -14,7 +14,9 @@ export class DualAIScreener {
         {
           useAdvanced: true,
           includeAnalysis: true,
-          reviewerContext: "AI Reviewer 1 - Focus on strict inclusion criteria adherence"
+          reviewerContext: "AI Reviewer 1 - Focus on strict inclusion criteria adherence",
+          provider: 'google',
+          model: 'gemini-pro'
         }
       );
 
@@ -24,7 +26,9 @@ export class DualAIScreener {
         {
           useAdvanced: true,
           includeAnalysis: true,
-          reviewerContext: "AI Reviewer 2 - Focus on comprehensive evidence evaluation"
+          reviewerContext: "AI Reviewer 2 - Focus on comprehensive evidence evaluation",
+          provider: 'openai',
+          model: 'gpt-4o'
         }
       );
 
@@ -98,7 +102,7 @@ export class DualAIScreener {
     }
 
     // Update reference with dual AI results
-    await Reference.update(reference.id, {
+    await apiClient.updateReference(reference.id, {
       ai_reviewer_1: reviewer1.recommendation,
       ai_reviewer_1_confidence: reviewer1.confidence,
       ai_reviewer_1_reasoning: reviewer1.reasoning,
@@ -122,7 +126,7 @@ export class DualAIScreener {
 
   static async handleProcessingError(reference, error) {
     // Mark as uncertain if processing fails
-    await Reference.update(reference.id, {
+    await apiClient.updateReference(reference.id, {
       dual_ai_completed: true,
       dual_ai_agreement: false,
       screening_status: "maybe",
@@ -142,7 +146,7 @@ export class DualAIScreener {
   }
 
   static async getConflictSummary(projectId) {
-    const conflicts = await Reference.filter({
+    const conflicts = await apiClient.filterReferences({
       project_id: projectId,
       screening_status: "conflict",
       dual_ai_completed: true

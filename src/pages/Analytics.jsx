@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { Reference, ReviewProject } from "@/api/entities";
+import { apiClient } from "@/api/apiClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, PieChart, TrendingUp, Download, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,7 +44,7 @@ export default function AnalyticsPage() {
     }
 
     // Load all references
-    const refs = await Reference.list();
+    const refs = await apiClient.listReferences();
     setReferences(refs);
 
     // Calculate comprehensive stats with real-time progress

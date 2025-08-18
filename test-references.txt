@@ -1,0 +1,65 @@
+TI  - Diffusion Tensor Imaging 3D Tractography-Guided, Individualized, Transsulcul Approach for Subcortical Hematoma Evacuation Using BrainPath/Myriad
+AU  - Soto JM
+AU  - Feng D
+AU  - Zhang Y
+AU  - Nguyen A
+AU  - Sonnier H
+AU  - Huang JH
+PY  - 2025
+JO  - Cureus
+AB  - sICH (spontaneous intracerebral hemorrhage) is a major cause of death and disability. Traditional surgical evacuation, while beneficial, risks damaging healthy tissue. Minimally invasive surgery (MIS) offers a promising alternative. This study explores the feasibility and safety of diffusion tensor imaging (DTI)-guided, trans-sulcal MIS with BrainPath/Myriad NICO Corporation (Indianapolis, IN, USA) for sICH evacuation.
+DO  - 10.7759/cureus.81792
+PMID- 40330394
+
+TI  - How we do it: Ultrasound-guided scuba technique for evacuation of intracerebral hematoma
+AU  - Mosteiro A
+AU  - Di Somma A
+AU  - Reyes L
+AU  - Rodríguez-Hernández A
+AU  - Torné R
+PY  - 2025
+JO  - Acta Neurochir (Wien)
+AB  - Minimally invasive treatment of intracerebral hematomas is gaining importance following recent trials. Clot evacuation must minimise collateral damage while assuring optimal blood-volume reduction. Technical refinements call for systematic yet dynamic procedures, where ultrasound is an asset.
+DO  - 10.1007/s00701-025-06539-y
+PMID- 40314818
+
+TI  - Optimization and Economic Impact of Expedited Minimally Invasive Parafascicular Surgery (MIPS) Protocol for Spontaneous Intraparenchymal Hemorrhage
+AU  - Patel MS
+AU  - Carfora A
+AU  - Botterbush KS
+AU  - Urquiaga JF
+AU  - Coppens JR
+PY  - 2025
+JO  - Cureus
+AB  - Background Minimally invasive parafascicular surgery (MIPS) for evacuating intracerebral hemorrhage (ICH) has proven to be an effective treatment compared to medical management. At our academic center, we have adopted a strategy of early surgery (<12 hours) and aimed to assess its impact on patients undergoing MIPS from an economic standpoint.
+DO  - 10.7759/cureus.81234
+PMID- 40291194
+
+TI  - Cost-Effectiveness Analysis of Early Minimally Invasive Removal of Intracerebral Hemorrhage
+AU  - Hanmer J
+AU  - Arnold J
+AU  - Hall A
+AU  - Ratcliff JJ
+AU  - Allen JW
+AU  - Frankel M
+AU  - Wright DW
+AU  - Barrow DL
+AU  - Pradilla G
+AU  - Smith KJ
+PY  - 2025
+JO  - Stroke
+AB  - Supratentorial intracerebral hemorrhage (ICH) is common and often devastating. In a randomized controlled trial, ICH evacuation with minimally invasive trans-sulcal parafascicular surgery (MIPS) improved functional outcomes at 180 days compared with medical management (MM), primarily in patients with lobar hemorrhages. The cost-effectiveness of MIPS compared with MM is explored.
+DO  - 10.1161/STROKEAHA.124.048493
+PMID- 40276867
+
+TI  - Minimally invasive trans-sulcal parafascicular surgery for the early evacuation of spontaneous intracerebral hemorrhage: the ENRICH trial
+AU  - Cinque F
+AU  - Nilo D
+AU  - Gezzi A
+AU  - De Gregorio F
+AU  - Clerici B
+PY  - 2025
+JO  - Intern Emerg Med
+AB  - The ENRICH trial evaluated minimally invasive trans-sulcal parafascicular surgery for intracerebral hemorrhage evacuation.
+DO  - 10.1007/s11739-025-03907-5
+PMID- 40029567

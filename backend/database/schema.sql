@@ -40,19 +40,21 @@ CREATE TABLE IF NOT EXISTS public.references (
     url TEXT,
     
     -- Screening data
-    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'included', 'excluded', 'uncertain', 'conflict')),
+    screening_status TEXT DEFAULT 'pending' CHECK (screening_status IN ('pending', 'include', 'exclude', 'maybe', 'conflict')),
     ai_recommendation TEXT,
     ai_confidence NUMERIC(3,2),
     ai_reasoning TEXT,
     ai_analysis JSONB,
     
     -- Dual review data
-    reviewer1_decision TEXT,
-    reviewer1_reasoning TEXT,
-    reviewer1_confidence NUMERIC(3,2),
-    reviewer2_decision TEXT,
-    reviewer2_reasoning TEXT,
-    reviewer2_confidence NUMERIC(3,2),
+    ai_reviewer_1 TEXT,
+    ai_reviewer_1_confidence NUMERIC(3,2),
+    ai_reviewer_1_reasoning TEXT,
+    ai_reviewer_2 TEXT,
+    ai_reviewer_2_confidence NUMERIC(3,2),
+    ai_reviewer_2_reasoning TEXT,
+    dual_ai_completed BOOLEAN DEFAULT FALSE,
+    dual_ai_agreement BOOLEAN,
     
     -- User review data
     user_decision TEXT,

@@ -7,6 +7,21 @@ This app uses a **dual deployment strategy**:
 
 ## 🎯 Quick Deploy
 
+### 0. Supabase Setup (5 minutes)
+```bash
+# Install Supabase CLI
+npm install -g supabase
+
+# Set up your Supabase project
+./scripts/setup-supabase.sh
+
+# Or manually:
+# 1. Go to https://supabase.com
+# 2. Create new project
+# 3. Run the SQL from backend/database/schema.sql
+# 4. Get your API keys
+```
+
 ### 1. Frontend (Vercel) - 2 minutes
 ```bash
 # Deploy to Vercel
@@ -37,6 +52,8 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_KEY=your_supabase_anon_key
 FRONTEND_URL=https://your-vercel-app.vercel.app
 ```
+
+**Required Node.js version:** 18+ (for Supabase CLI)
 
 ## 🔧 Alternative Backend Platforms
 

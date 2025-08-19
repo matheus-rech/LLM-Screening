@@ -6,6 +6,40 @@ const supabase = createClient(
 );
 
 export const apiClient = {
+  // LLM operations
+  async invokeLLM(prompt, responseSchema = null, provider = null, model = null) {
+    const useCustomBackend = import.meta.env.VITE_USE_CUSTOM_BACKEND === 'true';
+    if (!useCustomBackend) {
+      console.warn('LLM invocation requires custom backend to be enabled');
+      return {
+        recommendation: 'uncertain',
+        confidence: 0,
+        reasoning: 'LLM backend not configured',
+      };
+    }
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const response = await fetch(`${backendUrl}/api/llm/invoke`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt,
+        response_json_schema: responseSchema,
+        provider,
+        model,
+      }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      throw new Error(`LLM invocation failed: ${response.status} ${response.statusText} ${text}`);
+    }
+
+    return await response.json();
+  },
+
   // Reference operations
   async listReferences() {
     const { data, error } = await supabase

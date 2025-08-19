@@ -1,142 +1,183 @@
 # 🚀 Deployment Guide - LLM Screening App
 
-## 📋 Overview
-This app uses a **dual deployment strategy**:
-- **Frontend (React/Vite)** → Vercel
-- **Backend (Flask)** → Railway/Render
+## 🏗️ **Simplified Architecture**
 
-## 🎯 Quick Deploy
+- **Frontend**: React + Vite (deploy to Vercel)
+- **Backend**: Supabase (database + serverless functions)
+- **LLM**: Direct API calls from frontend to Gemini/OpenAI
 
-### 0. Supabase Setup (5 minutes)
+## 📋 **Prerequisites**
+
+1. **Supabase Project** (already set up)
+2. **API Keys**:
+   - Gemini API Key ✅
+   - OpenAI API Key (optional, for dual LLM)
+3. **Vercel Account** (for frontend deployment)
+
+## 🔧 **Local Testing**
+
+### 1. Test Frontend
 ```bash
-# Install Supabase CLI
-npm install -g supabase
-
-# Set up your Supabase project
-./scripts/setup-supabase.sh
-
-# Or manually:
-# 1. Go to https://supabase.com
-# 2. Create new project
-# 3. Run the SQL from backend/database/schema.sql
-# 4. Get your API keys
-```
-
-### 1. Frontend (Vercel) - 2 minutes
-```bash
-# Deploy to Vercel
-npx vercel --prod
-```
-
-**Environment Variables for Vercel:**
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_USE_CUSTOM_BACKEND=true
-VITE_BACKEND_URL=https://your-flask-backend.railway.app
-```
-
-### 2. Backend (Railway) - 3 minutes
-```bash
-# Deploy to Railway
-railway login
-railway init
-railway up
-```
-
-**Environment Variables for Railway:**
-```
-GEMINI_API_KEY=AIzaSyD_N7EWlKL6AlsetfXG4mo67iC-AeRc1o0
-OPENAI_API_KEY=your_openai_key
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
-FRONTEND_URL=https://your-vercel-app.vercel.app
-```
-
-**Required Node.js version:** 18+ (for Supabase CLI)
-
-## 🔧 Alternative Backend Platforms
-
-### Render
-- Connect GitHub repo
-- Set environment variables
-- Deploy automatically
-
-### Heroku
-```bash
-heroku create your-app-name
-git push heroku main
-```
-
-## 🌐 Production URLs
-
-After deployment, update your frontend environment:
-```
-VITE_BACKEND_URL=https://your-backend-url.railway.app
-```
-
-## ✅ Verification
-
-1. **Backend Health Check:**
-```bash
-curl https://your-backend-url.railway.app/
-# Should return: {"hello": "world"}
-```
-
-2. **LLM Test:**
-```bash
-curl -X POST https://your-backend-url.railway.app/api/llm/invoke \
-  -H "Content-Type: application/json" \
-  -d '{"prompt":"Hello","provider":"google"}'
-```
-
-3. **Frontend Test:**
-- Visit your Vercel URL
-- Try the AI screening feature
-
-## 🔄 Updates
-
-**Frontend Updates:**
-```bash
-git push origin main
-# Vercel auto-deploys
-```
-
-**Backend Updates:**
-```bash
-git push origin main
-# Railway auto-deploys
-```
-
-## 🛠️ Local Development
-
-```bash
-# Frontend
+# Start development server
 npm run dev
 
-# Backend
-cd backend
-source venv/bin/activate
-python app.py
+# Open http://localhost:5173
+# Test dual LLM functionality
 ```
 
-## 📊 Features
+### 2. Test Dual LLM
+```bash
+# Open test-dual-llm.html in browser
+# Click "Test Gemini" to verify API works
+# Add OpenAI key to .env for dual testing
+```
 
-✅ **Dual LLM Screening** (Gemini + OpenAI)  
-✅ **Supabase Database**  
-✅ **React Frontend**  
-✅ **Flask Backend**  
-✅ **Production Ready**  
+## 🚀 **Deployment Steps**
 
-## 🆘 Troubleshooting
+### Step 1: Deploy Frontend to Vercel
 
-**CORS Issues:** Check `FRONTEND_URL` in backend env vars  
-**LLM Errors:** Verify API keys are set correctly  
-**Database Issues:** Check Supabase connection  
+1. **Connect to Vercel**:
+   ```bash
+   # Install Vercel CLI
+   npm i -g vercel
+   
+   # Login to Vercel
+   vercel login
+   ```
 
-## 🎉 Success!
+2. **Deploy**:
+   ```bash
+   # Deploy to Vercel
+   vercel --prod
+   ```
 
-Your app is now deployed with:
-- **Frontend:** https://your-app.vercel.app
-- **Backend:** https://your-backend.railway.app
-- **Database:** Supabase (cloud)
+3. **Configure Environment Variables** in Vercel Dashboard:
+   ```
+   VITE_SUPABASE_URL=https://jloyjcanvtolhgodeupf.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_GEMINI_API_KEY=AIzaSyD_N7EWlKL6AlsetfXG4mo67iC-AeRc1o0
+   VITE_OPENAI_API_KEY=your-openai-api-key
+   ```
+
+### Step 2: Verify Supabase Setup
+
+1. **Database Schema** (already applied):
+   ```sql
+   -- Check if schema is applied in Supabase Dashboard
+   -- Tables: references, screening_results, etc.
+   ```
+
+2. **Row Level Security** (RLS):
+   ```sql
+   -- Enable RLS on tables
+   ALTER TABLE references ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE screening_results ENABLE ROW LEVEL SECURITY;
+   ```
+
+### Step 3: Test Production
+
+1. **Visit your Vercel URL**
+2. **Test Import functionality**
+3. **Test Dual LLM screening**
+4. **Verify data persistence in Supabase**
+
+## 🔍 **Verification Checklist**
+
+### ✅ Frontend Deployment
+- [ ] Vercel deployment successful
+- [ ] Environment variables configured
+- [ ] App loads without errors
+- [ ] All pages accessible
+
+### ✅ Supabase Integration
+- [ ] Database connection working
+- [ ] Schema applied correctly
+- [ ] RLS policies configured
+- [ ] Data persistence working
+
+### ✅ LLM Integration
+- [ ] Gemini API calls working
+- [ ] OpenAI API calls working (if configured)
+- [ ] Dual LLM screening functional
+- [ ] Error handling working
+
+### ✅ Core Features
+- [ ] Reference import working
+- [ ] AI screening working
+- [ ] Dual review system working
+- [ ] Analytics displaying data
+- [ ] Export functionality working
+
+## 🐛 **Troubleshooting**
+
+### Frontend Issues
+- **Build errors**: Check environment variables in Vercel
+- **API errors**: Verify API keys are correct
+- **CORS errors**: Not applicable (direct API calls)
+
+### Supabase Issues
+- **Connection errors**: Check `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+- **Permission errors**: Check RLS policies
+- **Schema errors**: Run schema.sql in Supabase SQL editor
+
+### LLM Issues
+- **Gemini errors**: Check `VITE_GEMINI_API_KEY`
+- **OpenAI errors**: Check `VITE_OPENAI_API_KEY`
+- **Rate limiting**: Implement retry logic if needed
+
+## 📊 **Performance Optimization**
+
+### Frontend
+- **Code splitting**: Already configured with Vite
+- **Caching**: Vercel handles CDN caching
+- **Bundle size**: Monitor with `npm run build`
+
+### API Calls
+- **Rate limiting**: Monitor API usage
+- **Error handling**: Implement fallbacks
+- **Caching**: Consider caching LLM responses
+
+## 🔒 **Security Considerations**
+
+1. **API Keys**: Never expose in client-side code (use Vite env vars)
+2. **Supabase RLS**: Ensure proper access controls
+3. **Input validation**: Validate all user inputs
+4. **HTTPS**: Vercel provides SSL by default
+
+## 📈 **Monitoring**
+
+### Vercel Analytics
+- Page views and performance
+- Error tracking
+- User behavior
+
+### Supabase Dashboard
+- Database performance
+- API usage
+- Error logs
+
+### API Monitoring
+- Gemini API usage
+- OpenAI API usage (if configured)
+- Rate limit monitoring
+
+## 🎯 **Success Metrics**
+
+- **Deployment**: Frontend accessible via Vercel URL
+- **Functionality**: All features working in production
+- **Performance**: Fast loading times (< 3s)
+- **Reliability**: No critical errors in production
+- **User Experience**: Smooth dual LLM screening workflow
+
+## 🚀 **Go Live Checklist**
+
+- [ ] Frontend deployed to Vercel
+- [ ] Environment variables configured
+- [ ] Supabase database ready
+- [ ] LLM APIs working
+- [ ] Core features tested
+- [ ] Performance verified
+- [ ] Security reviewed
+- [ ] Monitoring set up
+
+**🎉 Ready to deploy! Your LLM Screening app is production-ready!**

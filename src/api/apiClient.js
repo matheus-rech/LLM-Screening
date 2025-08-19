@@ -6,38 +6,92 @@ const supabase = createClient(
 );
 
 export const apiClient = {
-  // LLM operations
-  async invokeLLM(prompt, responseSchema = null, provider = null, model = null) {
-    const useCustomBackend = import.meta.env.VITE_USE_CUSTOM_BACKEND === 'true';
-    if (!useCustomBackend) {
-      console.warn('LLM invocation requires custom backend to be enabled');
+  // LLM operations - Direct API calls
+  async invokeLLM(prompt, responseSchema = null, provider = 'google', model = null) {
+    try {
+      if (provider === 'google') {
+        // Direct Gemini API call
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_GEMINI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{
+                text: `${prompt}\n\nRespond with valid JSON only.`
+              }]
+            }],
+            generationConfig: {
+              temperature: 0.1,
+              maxOutputTokens: 2048,
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Gemini API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const jsonResponse = data.candidates[0].content.parts[0].text;
+        
+        // Try to parse JSON response
+        try {
+          return JSON.parse(jsonResponse);
+        } catch (e) {
+          // Fallback: extract JSON from text
+          const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+          }
+          throw new Error('Invalid JSON response from Gemini');
+        }
+      } else if (provider === 'openai') {
+        // Direct OpenAI API call
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: model || 'gpt-4',
+            messages: [{
+              role: 'user',
+              content: `${prompt}\n\nRespond with valid JSON only.`
+            }],
+            temperature: 0.1,
+            max_tokens: 2048,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const jsonResponse = data.choices[0].message.content;
+        
+        try {
+          return JSON.parse(jsonResponse);
+        } catch (e) {
+          const jsonMatch = jsonResponse.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            return JSON.parse(jsonMatch[0]);
+          }
+          throw new Error('Invalid JSON response from OpenAI');
+        }
+      }
+    } catch (error) {
+      console.error('LLM API error:', error);
       return {
         recommendation: 'uncertain',
         confidence: 0,
-        reasoning: 'LLM backend not configured',
+        reasoning: `LLM API error: ${error.message}`,
       };
     }
-
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-    const response = await fetch(`${backendUrl}/api/llm/invoke`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt,
-        response_json_schema: responseSchema,
-        provider,
-        model,
-      }),
-    });
-
-    if (!response.ok) {
-      const text = await response.text().catch(() => '');
-      throw new Error(`LLM invocation failed: ${response.status} ${response.statusText} ${text}`);
-    }
-
-    return await response.json();
   },
 
   // Reference operations

@@ -25,10 +25,18 @@ else:
     openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Initialize Supabase
-supabase: Client = create_client(
-    os.getenv('SUPABASE_URL'),
-    os.getenv('SUPABASE_KEY')
-)
+supabase = None
+if os.getenv('SUPABASE_URL') and os.getenv('SUPABASE_KEY'):
+    try:
+        supabase: Client = create_client(
+            os.getenv('SUPABASE_URL'),
+            os.getenv('SUPABASE_KEY')
+        )
+    except Exception as e:
+        print(f"Warning: Could not initialize Supabase client: {e}")
+        supabase = None
+else:
+    print("Warning: Supabase credentials not found. Database operations will be disabled.")
 
 @app.route('/', methods=['GET'])
 def health_check():
@@ -85,6 +93,9 @@ def invoke_llm():
 
 @app.route('/api/references/filter', methods=['POST'])
 def filter_references():
+    if not supabase:
+        return jsonify({'error': 'Supabase not configured'}), 500
+        
     data = request.get_json()
     filters = data.get('filter', {})
 
@@ -109,6 +120,9 @@ def filter_references():
 
 @app.route('/api/references/update', methods=['POST'])
 def update_reference():
+    if not supabase:
+        return jsonify({'error': 'Supabase not configured'}), 500
+        
     data = request.get_json()
     ref_id = data.get('id')
     updates = data.get('update')
